@@ -1,0 +1,16 @@
+{
+  "name": "Mjcitytrack",
+  "short_name": "MjTrack",
+  "start_url": "/mjcitytracker/",
+  "scope": "/mjcitytracker/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/mjcitytracker/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
