@@ -16,12 +16,12 @@ async function run() {
     options: { responsive: true, plugins: { legend: { labels: { color: '#e2e8f0' } } }, scales: { x: { ticks: { color: '#cbd5e1' } }, y: { ticks: { color: '#cbd5e1' } } } }
   });
 
-  const trackNames = (data.tracks || []).slice(0, 8).map(t => t.name);
-  const trackIndex = (data.tracks || []).slice(0, 8).map((_, i) => 8 - i);
+  const trackNames = (data.tracks || []).map(t => t.name);
+  const trackIndex = (data.tracks || []).map((_, i, arr) => arr.length - i);
   new Chart(document.getElementById('tracksChart'), {
     type: 'bar',
     data: { labels: trackNames, datasets: [{ label: 'Momentum Index', data: trackIndex, backgroundColor: ['#22d3ee','#60a5fa','#a78bfa','#f472b6','#fb7185','#f59e0b','#34d399','#93c5fd'] }] },
-    options: { indexAxis: 'y', plugins: { legend: { labels: { color: '#e2e8f0' } } }, scales: { x: { ticks: { color: '#cbd5e1' } }, y: { ticks: { color: '#cbd5e1' } } } }
+    options: { indexAxis: 'y', plugins: { legend: { labels: { color: '#e2e8f0' } } }, scales: { x: { ticks: { color: '#cbd5e1' } }, y: { ticks: { color: '#cbd5e1', autoSkip: false } } } }
   });
 
   const trackList = document.getElementById('trackList');
@@ -53,6 +53,28 @@ async function run() {
   });
 
   document.getElementById('weeklyReport').textContent = data.weekly_report || 'No weekly report yet.';
+  const weeklyPlaylists = document.getElementById('weeklyPlaylists');
+  (data.playlist_intel || []).forEach((row) => {
+    (row.sample_playlists || []).forEach((p) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${row.track}:</strong> <a href="${p.url}" target="_blank">${p.name}</a>`;
+      weeklyPlaylists.appendChild(li);
+    });
+  });
+  if (!weeklyPlaylists.children.length) {
+    const li = document.createElement('li');
+    li.textContent = 'No playlist links available yet in current snapshot.';
+    weeklyPlaylists.appendChild(li);
+  }
+
+  const weeklyToggle = document.getElementById('weeklyToggle');
+  const weeklyPanel = document.getElementById('weeklyPanel');
+  weeklyToggle.addEventListener('click', () => {
+    const isOpen = weeklyPanel.classList.toggle('collapsed') === false;
+    weeklyToggle.setAttribute('aria-expanded', String(isOpen));
+    weeklyToggle.textContent = `${isOpen ? '▼' : '▶'} Weekly Artist Report`;
+  });
+
   document.getElementById('catalogHealth').textContent = data.catalog_health || 'No catalog health data yet.';
 }
 
